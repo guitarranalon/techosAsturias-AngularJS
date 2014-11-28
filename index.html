@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html ng-app="techosAsturiasApp">
+	<head>
+	<title>Mis techos de Asturias</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta name="author" content="Roberto Cancio González" />
+	<meta content="montaña, mountain, Asturias, techos, roof" name="keywords" />
+	<meta name="description" content="Comprueba tus progresos en el reto de los techos de Asturias">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<link rel="stylesheet" href="css/styles.css" />
+	<link href="img/favicon.ico" rel="Shortcut Icon" />
+	
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.3/angular.min.js"></script>
+	<script src="js/techos.js"></script>
+	</head>
+	<body class="unanimated" ng-controller="TechosController">
+		<div id="header">
+			<div class="row">
+				<div class="logo">
+				</div>
+				<h1>Techos de Asturias</h1>
+				<div class="menuButtonWrapper">
+					<button type="button" class="btn" data-toggle="collapse" data-target="#main-nav">
+					  Menú
+					</button>				
+				</div>
+				<ul	class="nav collapse" id="main-nav">
+					<!--<li><a href="#mapa" title="Ver los picos sobre el mapa">Mapa</a>-->
+					</li><li><a href="#tabla" title="Comprobar tus progresos en el reto">Mis techos</a>
+					</li><li><a href="#estadisticas" title="Información gráfica sobre las montañas a ascender">Estadísticas</a>
+					</li><li><a href="#anotaciones" title="Posibles correcciones a la lista oficial">Anotaciones</a>
+					</li><li><a href="#avisolegal" title="Aviso legal">Aviso legal</a></li>
+				</ul>
+			</div>
+		</div>	
+		<div id="mapa" class="section">
+			<div id="map-canvas">
+			</div>
+			<div class="download">
+				<div class="row">
+					<a href="files/techosAsturias.kml" title="Descargar el fichero kml con las coordenadas de los picos">Descargar coordenadas (.kml)</a>
+				</div>
+			</div>
+		</div>	
+		<div id="tabla" class="section">
+			<div class="row">
+				<h2>Mis techos</h2>
+				<form method="post" >
+					<table>
+						<thead>
+							<th>
+								Concejo
+							</th>
+							<th>
+								Pico
+							</th>
+							<th>
+								Altura
+							</th>
+							<th>
+								Ascendido
+							</th>
+						</thead>
+						<tbody>
+							<tr ng-repeat="techo in techos" ng-click="clickFila($index)">
+								<td>{{techo.concejo}}</td>
+								<td>{{techo.pico}}</td> 
+								<td>{{techo.altura}}m</td>
+								<td class="ascendido {{techo.ascendido}}"></td>
+							</tr>						
+						</tbody>
+					</table>
+				</form>
+
+				<div id="resultado">
+					<p class="progressTag">Progreso</p>
+					<div class="progress">
+						<div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: {{porcentajeAscendidos()}};">
+						  <span class="sr-only">{{totalAscendidos}}/78</span>
+						</div>
+					</div>
+				</div>
+			
+				<div id="resultadoPonderado">
+					<p class="progressTag">Progreso ponderado por dificultad</p>
+					<div class="progress">
+						<div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: {{porcentajeDificultadAscendidos()}}%;">
+							<span class="sr-only">{{totalDificultadAscendidos}}%</span>
+						</div>
+					</div>		
+			  </div>				
+			  
+			  <div id="social">
+				<a class="share" href="#" title="Compartir en las redes sociales">Compartir</a>
+			  </div>			  
+			</div>
+		</div>
+	  <div id="estadisticas" class="section">
+		<div class="row">
+			<h2>Estadísticas</h2>
+			<div id="visorGrafica">
+				<ul id="grafica">
+					<li ng-repeat="techo in techos">
+						<div class="pico1" style="border-width:0 0 {{alturaPorcentaje($index)}}px 90px; left:{{distanciaIzquierda($index)}}px"></div>
+						<div class="pico2" style="border-width:0 90px {{alturaPorcentaje($index)}}px 0; left:{{distanciaIzquierda($index)}}px"></div>
+						<div class="info" style="bottom:{{alturaPorcentaje($index)}}px; left:{{distanciaIzquierda($index)}}px">
+							{{techo.pico}} ({{techo.altura}}m)
+						</div>
+					</li>
+				</ul>
+			</div>			
+		</div>
+	  </div>
+	  <div id="anotaciones" class="section">
+		<div class="row">
+			<h2>Anotaciones sobre la lista</h2>
+			<p>
+			La lista presentada anteriormente se considera la más oficial y es, por ejemplo, la empleada por la 
+			<a href="http://www.fempa.net/fempa/servlet/Home" title="Ir a la web de la Federación de Deportes de montaña, escalada y senderismo del Principado de Asturias">Fempa</a>. 
+			También coincide con la publicada por Raimundo González Cuenco en su libro <a href="http://www.azuceldigital.com/tienda-on-line/" title="Bajar a hasta abajo para encontrar el libro">Los 78 techos de los 
+			concejos de Asturias</a> <span class="isbn">(ISBN: 978-8496175273)</span>.
+			</p>
+			<p>
+			Sin embargo, tras un estudio de los distintos techos utilizando la cartografía del 
+			<a href="http://www.ign.es/" title="Ir al sitio web del Instituto Geográfico Nacional">IGN</a>, 
+			se pueden observar varias incorrecciones en esa lista, que se detallan a continuación:
+			</p>
+			<ul>
+				<li>
+				El pico más alto de Avilés no es El Vallín (de 119m y no 131 como aparece en ocasiones) sino La Miranda.
+				</li>
+				<li>
+				La cumbre de Peña Ten (techo de Ponga en la lista oficial) está situada fuera de Asturias.
+				</li>
+				<li>
+				La cumbre del Cueto Tabladiello, techo de Ribadedeva, se encuentra fuera del concejo.
+				</li>
+				<li>
+				El techo de Llanes, Cabeza Ubena (o Bubena) también está fuera del concejo.
+				</li>
+				<li>
+				El techo de Mieres, Cuetu Ventosu tiene a su lado la Burra Blanca, que mide 5m más y cuya cumbre está dentro de los límites del concejo.
+				</li>
+				<li>
+				El Fontán Norte, techo de Quirós, es más bajo que el Fontán Sur (2408 y 2414 respectivamente).
+				</li>
+				<li>
+				El Mosqueiro, techo de Pesoz, tiene la cumbre fuera de los límites del concejo.
+				</li>
+			</ul>
+			<p>
+			No obstante, teniendo en cuenta la relativa oficialidad de la lista anterior y la cantidad de personas que ya la 
+			habrán completado se ha optado por no realizar las correcciones oportunas.
+			</p>
+		</div>
+	  </div>
+	  <div id="avisolegal" class="section">
+		<div class="row">
+			<h2>Aviso legal</h2>
+			<p>
+			El montañismo es una actividad potencialmente peligrosa. Muchas de las cumbres aquí recogidas 
+			requieren de ciertas habilidades (buena forma física, capacidad de orientación, soltura en la progresión 
+			por laderas escarpadas...) para poder ser ascendidas con un mínimo de seguridad. 
+			</p>
+			<p>
+			El contenido de este sitio tiene carácter meramente informativo y Mis Techos de Asturias no garantiza 
+			la inexistencia de errores ni se responsabiliza de las acciones y/o consecuencias derivadas de la utilización 
+			de la información por parte de los usuarios.
+			</p>
+		</div>
+	  </div>
+	  <div id="footer">
+		<div class="row">
+			<a href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.es_ES" title="Licencia Creative Commons" class="creativeCommons">CC</a> <a href="https://twitter.com/guitarranalon" title="Contactar conmigo a través de Twitter">guitarranalon</a> 2014
+		</div>
+	  </div>		
+		
+      <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+      <script>window.jQuery || document.write('<script src="js/jquery-1.11.0.min.js"><\/script>')</script>	  		
+      <script type="text/javascript" src="js/bootstrap.min.js"></script>
+      <script type="text/javascript" src="js/hideshare.min.js"></script>	  
+	  <script src="js/TechosModule.js"></script>	  
+	  <script>
+		var body = document.body;
+		removeClass(body, 'unanimated');
+		window.onload = TechosModule.loadMapScript;	
+		
+		$(".share").hideshare({
+			link: "http://guitarranalon.github.io/techosdeasturias",
+			media: "http://guitarranalon.github.io/techosdeasturias/img/logo.png",
+			title: "Mis techos de Asturias",
+			description: "Comprueba tus avances en el reto de los Techos de Asturias. Tanto si estás empezando como si ya te faltan pocos ¡completa tu información!",
+			position: "top",
+			linkedin: false			
+		});				
+	  </script>
+	</body>
+</html>
